@@ -1,5 +1,7 @@
 package com.jsonMappingStrategy.sudarshanFidilityApp.service.custom;
 
+import com.jsonMappingStrategy.sudarshanFidilityApp.model.TableAttribute;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +12,7 @@ public class CustomDataHandler {
     void handleCustomCompare(Map<String, Map<String, List<Map<String, Object>>>> parsedMap){
 
         List<Map<String, Object>> sourceData = new ArrayList<>();
-        Map<String, Object> categoryCode = new HashMap<>();
-        categoryCode.put("client_org_config_attrib_category_cd", "ClientCONFIG");
-        sourceData.add(categoryCode);
+        List<TableAttribute> tableAttribute = getTableAttributes();
 
         for (Map.Entry<String, Map<String, List<Map<String, Object>>>> entry : parsedMap.entrySet()) {
             Map<String, List<Map<String, Object>>> node = entry.getValue();
@@ -21,11 +21,14 @@ public class CustomDataHandler {
 
                 for (Map<String, Object> item : dataList) {
                     for (Map.Entry<String, Object> itemEntry : item.entrySet()) {
-                        Map<String, Object> sourceDataMap = new HashMap<>();
-                        sourceDataMap.put("client_org_config_attrib_id", itemEntry.getKey());
-                        sourceDataMap.put("client_org_config_attrib_value", itemEntry.getValue());
-                        sourceDataMap.put("client_org_config_attrib_category_cd", "CLIENTCONFIG");
-                        sourceData.add(sourceDataMap);
+                        for (TableAttribute attribute : tableAttribute) {
+                            Map<String, Object> sourceDataMap = new HashMap<>();
+                            sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getKey());
+                            sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getValue());
+                            sourceDataMap.put("client_org_config_attrib_category_cd", "CLIENTCONFIG");
+                            sourceData.add(sourceDataMap);
+                        }
+
                     }
                 }
             }
@@ -34,6 +37,14 @@ public class CustomDataHandler {
         determineTrueChanges(sourceData);
 
 
+    }
+
+    private List<TableAttribute> getTableAttributes() {
+        List<TableAttribute> tableAttributes = new ArrayList<>();
+        tableAttributes.add(new TableAttribute("client_org_config_attrib_id", "", "String"));
+        tableAttributes.add(new TableAttribute("client_org_config_attrib_value", "", "String"));
+        tableAttributes.add(new TableAttribute("client_org_config_attrib_category_cd", "", "String"));
+        return tableAttributes;
     }
 
 
