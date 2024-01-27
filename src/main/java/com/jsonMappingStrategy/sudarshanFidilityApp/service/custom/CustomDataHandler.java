@@ -21,14 +21,18 @@ public class CustomDataHandler {
 
                 for (Map<String, Object> item : dataList) {
                     for (Map.Entry<String, Object> itemEntry : item.entrySet()) {
-                        for (TableAttribute attribute : tableAttribute) {
-                            Map<String, Object> sourceDataMap = new HashMap<>();
-                            sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getKey());
-                            sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getValue());
-                            sourceDataMap.put("client_org_config_attrib_category_cd", "CLIENTCONFIG");
-                            sourceData.add(sourceDataMap);
-                        }
+                        Map<String, Object> sourceDataMap = new HashMap<>();
+                        for (TableAttribute attribute : getTableAttributes()) {
+                            if(attribute.getTableAttributeName().contains("id")) {
+                                sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getKey());
+                            }
+                            if(attribute.getTableAttributeName().contains("val")) {
+                                sourceDataMap.put(attribute.getTableAttributeName(), itemEntry.getValue());
+                            }
 
+                        }
+                        sourceDataMap.put("client_org_config_attrib_category_cd", "CLIENTCONFIG");
+                        sourceData.add(sourceDataMap);
                     }
                 }
             }
