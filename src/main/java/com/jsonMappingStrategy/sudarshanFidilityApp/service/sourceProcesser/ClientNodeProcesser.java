@@ -41,6 +41,7 @@ public class ClientNodeProcesser extends GenericSourceProcessor{
                                         break;// Found table column matching to keyval in source, go to next keyval
                                     }
                                 }
+                                mapToAdd.put("client_org_config_attrib_category_cd", "CLIENTCONFIG");
                             }
                             if (!mapToAdd.isEmpty()) {
                                 listToAdd.add(mapToAdd);
